@@ -4,6 +4,11 @@ public class Data {
     private String status;
     private String result;
 
+    public Data(String status, String result){
+        this.status = status;
+        this.result = result;
+    }
+
     public String getStatus() {
         return status;
     }
