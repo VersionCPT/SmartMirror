@@ -21,12 +21,12 @@ public class HttpConnection extends Thread{
 
     public HttpConnection(String addr){
             this.addr = addr;
-        }
+    }
 
     @Override
     public void run(){
-            reqHttp();
-        }
+        reqHttp();
+    }
 
     private void reqHttp(){
         try {
@@ -38,12 +38,14 @@ public class HttpConnection extends Thread{
 
             int responseCode = conn.getResponseCode();
 
-            if(responseCode<200 || responseCode>=300){
-                return;
+            if(responseCode < 200 || responseCode >= 300){
+                throw new HttpConnectionException();
             }
 
         }catch(IOException e){
             e.printStackTrace();
+        }catch(HttpConnectionException e){
+            e.getMessage();
         }
     }
 
@@ -72,6 +74,7 @@ public class HttpConnection extends Thread{
             while ((line = bufferedReader.readLine()) != null) {
                 sb.append(line);
             }
+
             /*BufferedReader를 Close 하니까 2번째 접근시에 java.io.IOException: closed 발생 */
             //bufferedReader.close();
             return sb.toString().trim();
@@ -82,14 +85,15 @@ public class HttpConnection extends Thread{
         return null;
     }
 
-    private void parseJson(String jsonStr){
-        StringBuffer sb = new StringBuffer();
+    /* 나중에 JsonParser Class 만들어야 할 듯 */
+    private Data parseJson(String jsonStr){
         try{
             JSONObject json = new JSONObject(jsonStr);
             data = new Data(json.getString("status"), json.getString("result"));
         }catch(JSONException e){
             e.getStackTrace();
         }
+        return data;
     }
 
     public void disconnect(){
@@ -97,10 +101,11 @@ public class HttpConnection extends Thread{
     }
 
     public void setData(){
-        parseJson(getMsg());
+        this.data = parseJson(getMsg());
     }
 
     public Data getData() {
         return data;
     }
+
 }
