@@ -1,5 +1,6 @@
 package com.rorrim.mang.smartmirror;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,6 +11,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.LinkedList;
 
 public class HttpConnection extends Thread{
 
@@ -17,7 +19,7 @@ public class HttpConnection extends Thread{
     private final String GET_METHOD = "GET";
     private String addr;
     private HttpURLConnection conn;
-    private Data data;
+    private LinkedList<Data> dataList;
 
     public HttpConnection(String addr){
             this.addr = addr;
@@ -86,26 +88,33 @@ public class HttpConnection extends Thread{
     }
 
     /* 나중에 JsonParser Class 만들어야 할 듯 */
-    private Data parseJson(String jsonStr){
+    private LinkedList<Data> parseJson(String jsonStr){
+
+        LinkedList<Data> dataList = new LinkedList<>();
+
         try{
-            JSONObject json = new JSONObject(jsonStr);
-            data = new Data(json.getString("status"), json.getString("result"));
+            JSONArray jsonArray = new JSONArray(jsonStr);
+            for(int i = 0; i < jsonArray.length(); i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                dataList.add(new Data(jsonObject.getString("name"), jsonObject.getString("models")));
+            }
+
         }catch(JSONException e){
             e.getStackTrace();
         }
-        return data;
+        return dataList;
     }
 
     public void disconnect(){
         conn.disconnect();
     }
 
-    public void setData(){
-        this.data = parseJson(getMsg());
+    public void setDataList(){
+        this.dataList = parseJson(getMsg());
     }
 
-    public Data getData() {
-        return data;
+    public LinkedList<Data> getDataList() {
+        return dataList;
     }
 
 }

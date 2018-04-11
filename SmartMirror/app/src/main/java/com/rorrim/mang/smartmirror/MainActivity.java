@@ -75,10 +75,10 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { //버튼이 눌렸을 때
-                nc.getHttpConnection().setData();
+                nc.getHttpConnection().setDataList();
                 Intent intent = new Intent(MainActivity.this, ContentActivity.class);
-                intent.putExtra("status", nc.getHttpConnection().getData().getStatus());
-                intent.putExtra("result", nc.getHttpConnection().getData().getResult());
+                intent.putExtra("status", nc.getHttpConnection().getDataList().get(0).toString());
+                intent.putExtra("result", nc.getHttpConnection().getDataList().get(1).toString());
                 startActivity(intent); //액티비티 이동
             }
         });
