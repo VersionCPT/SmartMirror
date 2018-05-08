@@ -1,5 +1,6 @@
-from flask import render_template, jsonify, json
+from flask import render_template, jsonify, json, request, send_file
 from app import app
+import os
 
 @app.route('/')
 def home():
@@ -27,3 +28,9 @@ def get_json():
         mimetype='application/json'
     )
     return response
+
+@app.route('/get_file', methods=['GET'])
+def get_file():
+    file_name = request.args.get('file')
+    if file_name is not None:
+        return send_file(os.path.dirname(os.path.realpath(__file__))+"/files/"+file_name, as_attachment=True)
