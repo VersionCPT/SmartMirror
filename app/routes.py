@@ -29,7 +29,7 @@ def get_json():
     )
     return response
 
-@app.route('/get_file', methods=['GET'])
+@app.route('/get_file', methods=['GET','POST'])
 def get_file():
     file_name = request.args.get('file')
     if file_name is not None:
