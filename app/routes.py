@@ -1,4 +1,4 @@
-from flask import render_template, jsonify, json, request, send_file
+from flask import render_template, jsonify, json, request, send_file, abort
 from app import app
 import os
 
@@ -33,4 +33,9 @@ def get_json():
 def get_file():
     file_name = request.args.get('file')
     if file_name is not None:
-        return send_file(os.path.dirname(os.path.realpath(__file__))+"/files/"+file_name, as_attachment=True)
+        try:
+            return send_file(os.path.dirname(os.path.realpath(__file__))+"/files/"+file_name, as_attachment=True)
+        except Exception as e:
+            abort(400)
+    else:
+        abort(400)
