@@ -1,6 +1,11 @@
+import threading
+
 from flask import render_template, jsonify, json, request, send_file, abort
-from app import app
+from app import app, weather
 import os
+
+from app.weather import Weather
+from app.news import News
 
 @app.route('/')
 def home():
