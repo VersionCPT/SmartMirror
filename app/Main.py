@@ -1,11 +1,11 @@
 from app import app
 from app import news
-from app import weather
-
 import threading
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', debug=True)#, port=5000)
+    n = news.News()
+    threading.Thread(target=n.do_crawling).start()
+    app.run(host='127.0.0.1', debug=True, use_reloader=False)#, port=5000)
 
 # suggested way
 '''
