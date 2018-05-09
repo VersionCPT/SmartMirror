@@ -1,5 +1,5 @@
 from flask import render_template, jsonify, json, request, send_file, abort
-from app import app
+from app import app, n
 import os
 
 @app.route('/')
@@ -39,3 +39,18 @@ def get_file():
             abort(400)
     else:
         abort(400)
+
+@app.route('/get_news', methods=['GET', 'POSE'])
+def get_news():
+    category = request.args.get('category')
+    if category is None:
+        abort(400)
+    else:
+        try:
+            if n.news[category] is None:
+                abort(400)
+            else:
+                data = json.dumps(n.news[category], ensure_ascii=False)
+                return data
+        except Exception as e:
+            abort(400)
