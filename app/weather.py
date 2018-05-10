@@ -3,6 +3,7 @@ import datetime
 import pytz
 import urllib.request
 import json
+import time
 
 class Weather:
     def get_api_date(self):
@@ -122,11 +123,13 @@ class Weather:
         elif (rain == 3):
             print('snowy')
 
+    def get_weather_data_thread(self):
+        while(True):
+            try:
+                self.data = self.get_weather_data()
+                time.sleep(600)
+            except:
+                break
+
     def get_weather(self):
-        ret = {}
-        ret['max'] = self.get_max_tem()
-        ret['min'] = self.get_min_tem()
-        ret['cur'] = self.get_cur_tem()
-        ret['rain'] = self.get_is_rain()
-        ret['cloudy'] = self.get_is_cloudy()
-        return ret
+        return self.data
