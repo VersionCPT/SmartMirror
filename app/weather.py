@@ -6,6 +6,10 @@ import json
 import time
 
 class Weather:
+
+    def closeEvent(self, event):
+        self.deleteLater()
+
     def get_api_date(self):
         standard_time = [2, 5, 8, 11, 14, 17, 20, 23]
         time_now = datetime.datetime.now(tz=pytz.timezone('Asia/Seoul')).strftime('%H')
