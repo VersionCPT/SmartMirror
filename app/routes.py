@@ -1,5 +1,5 @@
 from flask import render_template, jsonify, json, request, send_file, abort
-from app import app, n
+from app import app, n, w
 import os
 
 @app.route('/')
@@ -40,7 +40,7 @@ def get_file():
     else:
         abort(400)
 
-@app.route('/get_news', methods=['GET', 'POSE'])
+@app.route('/get_news', methods=['GET', 'POST'])
 def get_news():
     category = request.args.get('category')
     if category is None:
@@ -54,3 +54,8 @@ def get_news():
                 return data
         except Exception as e:
             abort(400)
+
+@app.route('/get_weather', methods=['GET','POST'])
+def get_weather():
+    info = w.get_weather()
+    return json.dumps(info, ensure_ascii=False)

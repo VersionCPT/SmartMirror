@@ -122,4 +122,11 @@ class Weather:
         elif (rain == 3):
             print('snowy')
 
-
+    def get_weather(self):
+        ret = {}
+        ret['max'] = self.get_max_tem()
+        ret['min'] = self.get_min_tem()
+        ret['cur'] = self.get_cur_tem()
+        ret['rain'] = self.get_is_rain()
+        ret['cloudy'] = self.get_is_cloudy()
+        return ret
