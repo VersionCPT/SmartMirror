@@ -31,7 +31,7 @@ class SmartMirrorGUI(QWidget):
         #ttt = threading.Timer(1, self.updateDatetime).start()
         th = threading.Thread(target=self.updateDatetime)
         th.start()
-        self.show()
+        #self.show()
 
     def addSchedule(self):
         # get schedules from server or google calendar
@@ -92,7 +92,7 @@ class SmartMirrorGUI(QWidget):
         # get weather information from server or by using api
 
         imgLB = QLabel()
-        img = QPixmap("rain.png")
+        img = QPixmap("rainy.png")
         img.scaledToWidth(10, Qt.FastTransformation)
         img = img.scaledToWidth(self.width()/100*10)
         imgLB.setPixmap(img)
