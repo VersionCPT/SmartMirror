@@ -4,4 +4,3 @@ import sys
 
 app = QApplication(sys.argv)
 gui = client_gui.SmartMirrorGUI()
-app.exec_()
