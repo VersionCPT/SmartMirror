@@ -2,8 +2,12 @@ from app import app, n, w
 import threading
 
 if __name__ == '__main__':
-    threading.Thread(target=n.do_crawling).start()
-    threading.Thread(target=w.get_weather_data_thread).start()
+    cr_th = threading.Thread(target=n.do_crawling)
+    cr_th.daemon = True
+    cr_th.start()
+    wt_th = threading.Thread(target=w.get_weather_data_thread)
+    wt_th.daemon = True
+    wt_th.start()
     app.run(host='127.0.0.1', debug=True, use_reloader=False)#, port=5000)
 
 # suggested way

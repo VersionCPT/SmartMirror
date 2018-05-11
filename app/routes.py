@@ -1,4 +1,4 @@
-from flask import render_template, jsonify, json, request, send_file, abort
+from flask import render_template, jsonify, json, request, send_file, abort, Markup
 from app import app, n, w
 import os
 
@@ -50,12 +50,20 @@ def get_news():
             if n.news[category] is None:
                 abort(400)
             else:
-                data = json.dumps(n.news[category], ensure_ascii=False)
-                return data
+                ret = ""
+                for i in n.news[category]:
+                    ret = ret + "<news>" + "<title>" + i[0] + "</title>" + "<content>" + i[1] + "</content>" + "</news>"
+                #data = json.dumps(n.news[category], ensure_ascii=False)
+                #return data
+                return Markup(ret)
         except Exception as e:
             abort(400)
 
 @app.route('/get_weather', methods=['GET','POST'])
 def get_weather():
     info = w.get_weather()
-    return json.dumps(info, ensure_ascii=False)
+    ret = ""
+    for i in info.keys():
+        ret = ret + "<" + str(i) + ">" + str(info[i]) + "</" + str(i) + ">"
+    return Markup(ret)
+    #return json.dumps(info, ensure_ascii=False)

@@ -133,6 +133,7 @@ class Weather:
                 self.data = self.get_weather_data()
                 time.sleep(600)
             except:
+                print("bb")
                 break
 
     def get_weather(self):
