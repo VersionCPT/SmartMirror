@@ -22,15 +22,12 @@ def get_news(category):
     soup = BeautifulSoup(html, 'html.parser')
     link = soup.find_all("news")
 
-    ret = {}
+    ret = []
 
     for i in link:
-        html2 = i.text
-        print(html2)
-
+        ret.append([i.title.text, i.content.text])
 
     return ret
 
 if __name__ == "__main__":
-    ret = get_news("world")
-    print(ret)
+    pass

@@ -36,6 +36,9 @@ class SmartMirrorGUI(QWidget):
         self.wt_th = threading.Thread(target=self.updateWeather)
         self.wt_th.daemon = True
         self.wt_th.start()
+        self.ns_th = threading.Thread(target=self.updateNews)
+        self.ns_th.daemon = True
+        self.ns_th.start()
 
     def initSchedule(self):
         # get schedules from server or google calendar
@@ -50,9 +53,9 @@ class SmartMirrorGUI(QWidget):
         for i in range(num_schedules):
             LB = QLabel(schedules[i][0]+" "+schedules[i][1])
             LB.setStyleSheet('color: white')
-            LB.setFont(QFont("", 45, QFont.Bold))
-            LB.setFixedSize(self.width()/100*40, self.height()/100*7)
-            LB.move(self.width()/100*3, self.height()/100*(97-(num_schedules-i)*7))
+            LB.setFont(QFont("", 40, QFont.Bold))
+            LB.setFixedSize(self.width()/100*40, self.height()/100*6)
+            LB.move(self.width()/100, self.height()/100*(94-(num_schedules-i)*6))
             LB.setAutoFillBackground(True)
             p = LB.palette()
             p.setColor(LB.backgroundRole(), Qt.black)
@@ -66,31 +69,22 @@ class SmartMirrorGUI(QWidget):
 
     def initNews(self):
         # get news from server
-        news = []
-        news.append("장미 유전자 지도 완성…'완벽한' 장미 나올")
-        news.append("삼성 갤럭시S9 이어 노트9에도 'SLP'적용한..")
-        news.append("\"영혼을 찾아라\" 불붙은 민규의 영혼 찾기")
-        news.append("반도를 강타한 어벤져스3… 5번 감상한 백승..")
+        self.news = web_connector.get_news("world")
+        self.index = 1
 
-        num_news = len(news)
+        LB = QLabel(self.news[0][0])
+        LB.setStyleSheet('color: white')
+        LB.setFont(QFont("", 30, QFont.Bold))
+        LB.setFixedSize(self.width(), self.height()/100*5)
+        LB.move(0, self.height()/100*94)
+        LB.setAutoFillBackground(True)
+        p = LB.palette()
+        p.setColor(LB.backgroundRole(), Qt.black)
+        LB.setPalette(p)
+        LB.setAlignment(Qt.AlignVCenter)
 
-        newsLB = []
-        for i in range(num_news):
-            LB = QLabel(news[i])
-            LB.setStyleSheet('color: white')
-            LB.setFont(QFont("", 30, QFont.Bold))
-            LB.setFixedSize(self.width()/100*40, self.height()/100*5)
-            LB.move(self.width()/100*57, self.height()/100*(97-(num_news-i)*5))
-            LB.setAutoFillBackground(True)
-            p = LB.palette()
-            p.setColor(LB.backgroundRole(), Qt.black)
-            LB.setPalette(p)
-            LB.setAlignment(Qt.AlignVCenter | Qt.AlignRight)
-            newsLB.append(LB)
-
-        self.newsLB = newsLB
-        for i in self.newsLB:
-            self.layout().addChildWidget(i)
+        self.newsLB = LB
+        self.layout().addChildWidget(self.newsLB)
 
     def initWeather(self):
         # get weather information from server or by using api
@@ -314,5 +308,17 @@ class SmartMirrorGUI(QWidget):
 
                 self.tempLB = QLabel(weather_info['t3h']+"˚C")
                 self.mmLB = QLabel("▲"+weather_info["tmx"][:-2]+"˚C ▼"+weather_info["tmn"][:-2]+"˚C")
+            except:
+                break
+
+    def updateNews(self):
+        while(True):
+            try:
+                time.sleep(5)
+                self.newsLB.setText(self.news[self.index][0])
+                self.index += 1
+                if self.index >= len(self.news):
+                    #update news
+                    self.index = 0
             except:
                 break
