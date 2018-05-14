@@ -29,5 +29,10 @@ def get_news(category):
 
     return ret
 
+def upload_picture(file):
+    url = domain + "/face_upload"
+    files = {'file':open('weather_img/snow.png', 'rb')}
+    r = requests.post(url, files=files)
+
 if __name__ == "__main__":
-    pass
+    upload_picture(None)
