@@ -19,20 +19,26 @@ class Weather:
         check_time = int(time_now) - 1
         day_calibrate = 0
 
+        """
         while not check_time in standard_time:
             check_time -= 1
             if check_time < 2:
                 day_calibrate = 1
                 check_time = 23
                 break
+        """
 
         date_now = datetime.datetime.now(tz=pytz.timezone('Asia/Seoul')).strftime('%Y%m%d')
         check_date = int(date_now) - day_calibrate
 
+        return (str(check_date), "0200")
+        """
         if check_time < 10:
             return (str(check_date), '0' + (str(check_time) + '00'))
         return (str(check_date), (str(check_time) + '00'))
+        """
 
+    @property
     def get_weather_data(self):
         api_date, api_time = self.get_api_date()
         url = "http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService2/ForecastSpaceData?"
@@ -59,29 +65,31 @@ class Weather:
             date_calibrate = str(int(target_date) + 1)
 
         passing_data = {}
-        for one_parsed in parsed_json:
-            if one_parsed['fcstDate'] == target_date and one_parsed['fcstTime'] == target_time:  # get today's data
-                passing_data[one_parsed['category']] = one_parsed['fcstValue']
 
-            if one_parsed['fcstDate'] == date_calibrate and (
-                    one_parsed['category'] == 'TMX' or one_parsed['category'] == 'TMN'):  # TMX, TMN at calibrated day
+        dt = datetime.datetime.now()
+
+        for one_parsed in parsed_json:
+            if one_parsed['fcstDate'] == int(api_date) and one_parsed['category'] in ['TMX', 'TMN']:
                 passing_data[one_parsed['category']] = one_parsed['fcstValue']
+            elif int(dt.hour)*100+int(dt.minute) >= int(one_parsed['fcstTime'])-150:
+                if int(dt.hour) * 100 + int(dt.minute) <= int(one_parsed['fcstTime'])+150:
+                    passing_data[one_parsed['category']] = one_parsed['fcstValue']
         return passing_data
 
     def get_max_tem(self):  # 최고기온
-        data = self.get_weather_data()
+        data = self.get_weather_data
         tmx = data['TMX']
 
         return tmx
 
     def get_min_tem(self):  # 최저기온
-        data = self.get_weather_data()
+        data = self.get_weather_data
         tmn = data['TMN']
 
         return tmn
 
     def get_cur_tem(self):  # 현재기온
-        data = self.get_weather_data()
+        data = self.get_weather_data
         t3h = data['T3H']
 
         return t3h
@@ -93,7 +101,7 @@ class Weather:
         2 : 비/눈
         3 :  눈
         '''
-        data = self.get_weather_data()
+        data = self.get_weather_data
         pty = data['PTY']
         return pty
 
@@ -104,7 +112,7 @@ class Weather:
           3 : 구름많음
           4 : 흐림
           '''
-        data = self.get_weather_data()
+        data = self.get_weather_data
         sky = data['SKY']
 
         return sky
@@ -134,9 +142,9 @@ class Weather:
     def get_weather_data_thread(self):
         while(True):
             try:
-                self.data = self.get_weather_data()
+                self.data = self.get_weather_data
                 dt = datetime.datetime.now()
-                print("weather data updated at "+str(dt.hour)+"h "+str(dt.minute)+"m "+str(dt.second))
+                print("weather data updated at "+str(dt.hour)+"h "+str(dt.minute)+"m "+str(dt.second)+"s")
                 time.sleep(600)
             except:
                 print("bb")
