@@ -4,6 +4,10 @@ import time
 import datetime
 
 class News:
+
+    def __init__(self):
+        self.news = {}
+
     def closeEvent(self, event):
         self.deleteLater()
 
@@ -131,10 +135,6 @@ class News:
                 dt = datetime.datetime.now()
                 print("news crawling has finished at "+str(dt.hour)+"h "+str(dt.minute)+"m "+str(dt.second)+"s")
                 print("the time taken is " + str(time.time() - start_time) + " seconds.")
-
-                for i in self.news.keys():
-                    print(i)
-                    print(self.news[i])
                 time.sleep(3600)
             except:
                 break

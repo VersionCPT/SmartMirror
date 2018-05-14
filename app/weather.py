@@ -7,6 +7,9 @@ import time
 
 class Weather:
 
+    def __init__(self):
+        self.data = {}
+
     def closeEvent(self, event):
         self.deleteLater()
 
@@ -17,17 +20,17 @@ class Weather:
         day_calibrate = 0
 
         while not check_time in standard_time:
-            #        check_time -= 1
-            day_calibrate = 1
-            check_time = 23
-            '''
+            check_time -= 1
             if check_time < 2:
                 day_calibrate = 1
                 check_time = 23
-            '''
+                break
+
         date_now = datetime.datetime.now(tz=pytz.timezone('Asia/Seoul')).strftime('%Y%m%d')
         check_date = int(date_now) - day_calibrate
 
+        if check_time < 10:
+            return (str(check_date), '0' + (str(check_time) + '00'))
         return (str(check_date), (str(check_time) + '00'))
 
     def get_weather_data(self):
@@ -51,7 +54,8 @@ class Weather:
         target_time = parsed_json[0]['fcstTime']
 
         date_calibrate = target_date  # date of TMX, TMN
-        if target_time > '1300':
+
+        if int(target_time) > 1300:
             date_calibrate = str(int(target_date) + 1)
 
         passing_data = {}
