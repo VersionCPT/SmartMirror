@@ -1,4 +1,4 @@
-from flask import render_template, jsonify, json, request, send_file, abort, Markup
+from flask import render_template, json, request, send_file, abort, Markup
 from app import app, n, w
 import os
 
@@ -67,3 +67,18 @@ def get_weather():
         ret = ret + "<" + str(i) + ">" + str(info[i]) + "</" + str(i) + ">"
     return Markup(ret)
     #return json.dumps(info, ensure_ascii=False)
+
+@app.route('/face_upload', methods=['POST', 'GET'])
+def file_upload():
+    if request.method == 'POST':
+        file = request.files['file']
+        file.save("face/"+file.filename)
+        return file.filename+"uploaded"
+    else:
+        return '''<!doctype html>
+    <title>Upload new File</title>
+    <h1>Upload new File</h1>
+    <form action="" method=post enctype=multipart/form-data>
+      <p><input type=file name=file>
+         <input type=submit value=Upload>
+    </form>'''
