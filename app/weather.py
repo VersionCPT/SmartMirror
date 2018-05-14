@@ -135,6 +135,8 @@ class Weather:
         while(True):
             try:
                 self.data = self.get_weather_data()
+                dt = datetime.datetime.now()
+                print("weather data updated at "+str(dt.hour)+"h "+str(dt.minute)+"m "+str(dt.second))
                 time.sleep(600)
             except:
                 print("bb")
