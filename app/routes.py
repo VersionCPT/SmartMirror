@@ -63,7 +63,7 @@ def get_weather():
     return Markup(ret)
     #return json.dumps(info, ensure_ascii=False)
 
-
+'''
 @app.route('/recieve_image', methods = ['GET', 'POST'])
 def send_image():
     file_name = request.args.get('fileName')
@@ -74,11 +74,27 @@ def send_image():
         except Exception as e:
             abort(411)
     else:
-        abort(411)
-
+        full_filename = os.path.join(app.config['UPLOAD_FOLDER'], '1.jpg')
+        return render_template("image.html", user_image=full_filename)
+'''
 
 @app.route('/login', methods = ['POST'])
 def login():
     data = request.get_json()
     user = User.User(data['id'], data['pw'], data['money'])
     return jsonify(user.getStr())
+
+
+@app.route('/get_image.jpg', methods=['GET', 'POST'])
+def send_image():
+    file_name = request.args.get('fileName')
+    if file_name is not None:
+        try:
+            full_filename = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
+            return send_file(full_filename, as_attachment=True)
+        except Exception as e:
+            full_filename = os.path.join(app.config['UPLOAD_FOLDER'], '1.jpg')
+            return render_template("image.html", user_image=full_filename)
+    else:
+        full_filename = os.path.join(app.config['UPLOAD_FOLDER'], '1.jpg')
+        return render_template("image.html", user_image=full_filename)
