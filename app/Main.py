@@ -8,7 +8,7 @@ if __name__ == '__main__':
     wt_th = threading.Thread(target=w.get_weather_data_thread)
     wt_th.daemon = True
     wt_th.start()
-    app.run(host='127.0.0.1', debug=True, use_reloader=False)#, port=5000)
+    app.run(host='203.252.166.206', debug=True, use_reloader=False)#, port=5000)
 
 # suggested way
 '''
