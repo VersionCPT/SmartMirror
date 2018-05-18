@@ -1,4 +1,5 @@
-from flask import render_template, jsonify, send_from_directory, request, send_file, abort, Markup
+
+from flask import render_template, request, send_file, abort, Markup, jsonify
 from app import app, n, w, User
 import os
 
