@@ -41,10 +41,11 @@ if __name__ == '__main__':
     try:
         while True:
             dist = distance()
-            if dist <= 1.5:
+            print(dist)
+            if dist <= 150:
                 dt = datetime.datetime.now()
-                os.system("raspistill -o "+str(dt)+".jpg -t 1")
-            time.sleep(0.001)
+                os.system("raspistill -o "+str(time.time())+".jpg -t 1")
+            time.sleep(1)
 
         # Reset by pressing CTRL + C
     except:
