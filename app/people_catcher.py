@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-import time, datetime
+import time
 import os, sys
 
 GPIO.setmode(GPIO.BCM)
@@ -43,7 +43,6 @@ if __name__ == '__main__':
             dist = distance()
             print(dist)
             if dist <= 150:
-                dt = datetime.datetime.now()
                 os.system("raspistill -o "+str(time.time())+".jpg -t 1")
             time.sleep(1)
 
