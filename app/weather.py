@@ -117,35 +117,49 @@ class Weather:
 
         return sky
 
-    def print_weather(self):
+    def get_cur_sky(self):
 
-        print(self.get_min_tem())
+        cur_sky = ''
+
         rain = self.get_is_rain()
         cloud = self.get_is_cloudy()
 
         if (rain == 0):
             if (cloud == 1):
-                print('sunny')
+                cur_sky = 'Sunny'
             elif (cloud == 2):
-                print('cloudy')
+                cur_sky = 'Cloudy'
             elif (cloud == 3):
-                print('clooooooudy')
+                cur_sky = 'Very Cloudy'
             elif (cloud == 4):
-                print('foggy')
+                cur_sky = 'Foggy'
         elif (rain == 1):
-            print('rainy')
+            cur_sky = 'Rainy'
         elif (rain == 2):
-            print('rain with snow')
+            cur_sky = 'rain with snow'
         elif (rain == 3):
-            print('snowy')
+            cur_sky = 'Snowy'
+
+        return cur_sky
+
+    def get_json_data(self):
+        cur_weather_json = {
+            'cur_tem': self.get_cur_tem(),
+            'min_tem': self.get_min_tem(),
+            'max_tem': self.get_max_tem(),
+            'cur_sky': self.get_cur_sky()
+        }
+        return cur_weather_json
 
     def get_weather_data_thread(self):
         while(True):
             try:
                 self.data = self.get_weather_data
                 dt = datetime.datetime.now()
+                from app import fb
+                fb.update_weather(self.get_json_data())
                 print("weather data updated at "+str(dt.hour)+"h "+str(dt.minute)+"m "+str(dt.second)+"s")
-                time.sleep(600)
+                time.sleep(1800)
             except:
                 print("bb")
                 break
