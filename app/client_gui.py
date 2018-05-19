@@ -5,7 +5,7 @@ from PyQt5.QtCore import *
 import datetime
 import time
 import threading
-from app import web_connector
+from app import web_connector as wc
 import ctypes
 
 class SmartMirrorGUI(QWidget):
@@ -69,7 +69,7 @@ class SmartMirrorGUI(QWidget):
 
     def initNews(self):
         # get news from server
-        self.news = web_connector.get_news("world")
+        self.news = wc.get_news("world")
         self.index = 1
 
         LB = QLabel(self.news[0][0])
@@ -89,7 +89,7 @@ class SmartMirrorGUI(QWidget):
     def initWeather(self):
         # get weather information from server or by using api
 
-        weather_info = web_connector.get_weather()
+        weather_info = wc.get_weather()
 
         if weather_info is None:
             return None
@@ -272,7 +272,7 @@ class SmartMirrorGUI(QWidget):
         while(True):
             try:
                 time.sleep(300)
-                weather_info = web_connector.get_weather()
+                weather_info = wc.get_weather()
 
                 if weather_info is None:
                     return None

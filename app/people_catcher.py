@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 import os, sys
+from app import web_connector as wc
 
 GPIO.setmode(GPIO.BCM)
 
@@ -37,15 +38,13 @@ def distance():
 
     return distance
 
-if __name__ == '__main__':
+def catchPeople():
     try:
         while True:
             dist = distance()
-            print(dist)
             if dist <= 150:
-                os.system("raspistill -o "+str(time.time())+".jpg -t 1")
-            time.sleep(1)
-
-        # Reset by pressing CTRL + C
+                t = time.time()
+                os.system("raspistill -o "+str(t)+".jpg -t 1")
+                wc.upload_picture(str(t)+".jpg")
     except:
         GPIO.cleanup()
