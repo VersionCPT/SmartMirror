@@ -1,5 +1,4 @@
-
-from flask import render_template, request, send_file, abort, Markup, jsonify
+from flask import render_template, request, send_file, abort, Markup, jsonify, send_from_directory
 from app import app, n, w, User
 import os
 
@@ -98,3 +97,21 @@ def send_image():
     else:
         full_filename = os.path.join(app.config['UPLOAD_FOLDER'], '1.jpg')
         return render_template("image.html", user_image=full_filename)
+
+
+@app.route('/upload_mp3_file/<filename>', methods=['POST'])
+def upload_mp3_file(filename):
+    if '/' in filename:
+        # Return 400 BAD REQUEST
+        abort(400, 'no subdirectories directories allowed')
+
+    with open(os.path.join('C:/Users/jaewook/Desktop/', filename), 'wb') as fp:
+        fp.write(request.data)
+
+    # Return 201 CREATED
+    return '', 201
+
+
+@app.route('/download_mp3_file/<path>', methods=['GET'])
+def list_files(path):
+    return send_from_directory('C:/Users/jaewook/Desktop/upload', path, as_attachment=True)
