@@ -1,7 +1,7 @@
 import requests
 import urllib
 from bs4 import BeautifulSoup
-from app import firebase_manager
+import firebase_manager
 
 class WebConnector():
     def __init__(self):

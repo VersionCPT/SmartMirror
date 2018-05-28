@@ -5,13 +5,16 @@ from PyQt5.QtCore import *
 import datetime
 import time
 import threading
-from app import web_connector
+import web_connector
 import ctypes
 
 class SmartMirrorGUI(QWidget):
     def __init__(self):
         super().__init__()
-        self.showFullScreen()
+        #self.showFullScreen()
+        self.setFixedSize(1200,800)
+        print(self.width())
+        print(self.height())
         self.setWindowTitle('鏡:Rorrim')
         self.wc = web_connector.WebConnector()
         self.playlist = []
