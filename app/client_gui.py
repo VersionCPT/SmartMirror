@@ -44,10 +44,7 @@ class SmartMirrorGUI(QWidget):
 
     def initSchedule(self):
         # get schedules from server or google calendar
-        schedules = []
-        schedules.append(["12:00", "족발먹기"])
-        schedules.append(["14:20", "곱창먹기"])
-        schedules.append(["15:00", "학교가기"])
+        schedules = wc.get_schedule()
 
         num_schedules = len(schedules)
 
@@ -99,9 +96,7 @@ class SmartMirrorGUI(QWidget):
         dt = datetime.datetime.now()
 
         imgLB = QLabel()
-
         img = QPixmap("weather_img/sunny-day.png")
-
         if weather_info['cur_sky'] == "Sunny":
             if dt.hour >= 6 and dt.hour <= 20:
                 img = QPixmap("weather_img/sunny-day.png")
@@ -145,7 +140,8 @@ class SmartMirrorGUI(QWidget):
         tempLB.setPalette(p)
         tempLB.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
 
-        locLB = QLabel("서울 광진구 화양동")
+        loc = wc.get_location()
+        locLB = QLabel(loc)
         locLB.setStyleSheet('color: white')
         locLB.setFont(QFont("", 40, QFont.Bold))
         locLB.setFixedSize(self.width()/100*30, self.height()/100*6)
