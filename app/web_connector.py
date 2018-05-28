@@ -1,4 +1,5 @@
 import requests
+import urllib
 from bs4 import BeautifulSoup
 
 domain = "http://127.0.0.1:5000"
@@ -33,3 +34,17 @@ def upload_picture(file):
     url = domain + "/face_upload"
     files = {'file':open(file, 'rb')}
     r = requests.post(url, files=files)
+
+
+def get_mp3_file():
+    url = domain + "/download_mp3_file/"
+    fileName = 'a.mp3'
+    path = 'C:/Users/jaewook/Desktop/'
+    url_request = urllib.request.Request(url+fileName)
+    url_connect = urllib.request.urlopen(url_request)
+    with open(path + fileName, 'wb') as f:
+        while True:
+            buffer = url_connect.read(1024)
+            if not buffer: break
+            data_write = f.write(buffer)
+    url_connect.close()
