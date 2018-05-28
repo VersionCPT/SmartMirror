@@ -1,8 +1,7 @@
-
 import firebase_admin
 from firebase_admin import credentials, db
 
-class firebase_manager:
+class FirebaseManager():
 
     def __init__(self):
         cred = credentials.Certificate('Files/Auth/smartmirror-75b89-firebase-adminsdk-vx8is-56d6e1cacc.json')
@@ -15,4 +14,4 @@ class firebase_manager:
 
     def get_weather(self):
         weather_data = db.reference('weather'.format(self.weather.key)).get()
-        print(weather_data['cur_sky'])
+        return weather_data

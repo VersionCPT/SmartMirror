@@ -7,12 +7,14 @@ import time
 import threading
 from app import web_connector as wc
 import ctypes
+from app import firebase_manager
 
 class SmartMirrorGUI(QWidget):
     def __init__(self):
         super().__init__()
         self.showFullScreen()
         self.setWindowTitle('鏡:Rorrim')
+        self.fm = firebase_manager.FirebaseManager()
         self.initUI()
 
     def closeEvent(self, event):
@@ -76,7 +78,7 @@ class SmartMirrorGUI(QWidget):
         LB.setStyleSheet('color: white')
         LB.setFont(QFont("", 30, QFont.Bold))
         LB.setFixedSize(self.width(), self.height()/100*5)
-        LB.move(0, self.height()/100*94)
+        LB.move(self.width()/100, self.height()/100*94)
         LB.setAutoFillBackground(True)
         p = LB.palette()
         p.setColor(LB.backgroundRole(), Qt.black)
@@ -89,7 +91,7 @@ class SmartMirrorGUI(QWidget):
     def initWeather(self):
         # get weather information from server or by using api
 
-        weather_info = wc.get_weather()
+        weather_info = self.fm.get_weather()
 
         if weather_info is None:
             return None
@@ -99,44 +101,44 @@ class SmartMirrorGUI(QWidget):
         imgLB = QLabel()
 
         img = QPixmap("weather_img/sunny-day.png")
-        if weather_info['pty'] == "0":
-            if weather_info['sky'] == "1":
-                if dt.hour >= 6 and dt.hour <= 20:
-                   img = QPixmap("weather_img/sunny-day.png")
-                else:
-                   img = QPixmap("weather_img/sunny-night.png")
-            elif weather_info['sky'] == "2":
-                if dt.hour >= 6 and dt.hour <= 20:
-                   img = QPixmap("weather_img/cloudy-day.png")
-                else:
-                   img = QPixmap("weather_img/cloudy-night.png")
-            elif weather_info['sky'] == "3":
-                img = QPixmap("weather_img/cloudy-many.png")
-            elif weather_info['sky'] == "4":
-                img = QPixmap("weather_img/cloudy-so-much.png")
-        elif weather_info['pty'] == "1":
+
+        if weather_info['cur_sky'] == "Sunny":
+            if dt.hour >= 6 and dt.hour <= 20:
+                img = QPixmap("weather_img/sunny-day.png")
+            else:
+                img = QPixmap("weather_img/sunny-night.png")
+        elif weather_info['cur_sky'] == "Cloudy":
+            if dt.hour >= 6 and dt.hour <= 20:
+                img = QPixmap("weather_img/cloudy-day.png")
+            else:
+                img = QPixmap("weather_img/cloudy-night.png")
+        elif weather_info['cur_sky'] == "Very Cloudy":
+            img = QPixmap("weather_img/cloudy-many.png")
+        elif weather_info['cur_sky'] == "Foggy":
+            img = QPixmap("weather_img/cloudy-so-much.png")
+        elif weather_info['cur_sky'] == "Rainy":
             img = QPixmap("weather_img/rainy.png")
-        elif weather_info['pty'] == "2":
+        elif weather_info['cur_sky'] == "rain with snow":
             img = QPixmap("weather_img/rainy-snow.png")
-        elif weather_info['pty'] == "3":
+        elif weather_info['cur_sky'] == "Snowy":
             img = QPixmap("weather_img/snow.png")
 
         img.scaledToWidth(10, Qt.FastTransformation)
         img = img.scaledToWidth(self.width()/100*10)
         imgLB.setPixmap(img)
         imgLB.setFixedSize(img.width(), img.height())
-        imgLB.move(self.width()/100*3, self.height()/100*5)
+        imgLB.move(self.width()/100, self.height()/100*1)
         imgLB.setAutoFillBackground(True)
         p = imgLB.palette()
         p.setColor(imgLB.backgroundRole(), Qt.black)
         imgLB.setPalette(p)
         imgLB.setAlignment(Qt.AlignCenter)
 
-        tempLB = QLabel(weather_info['t3h']+"˚C")
+        tempLB = QLabel(str(weather_info['cur_tem'])+"˚C")
         tempLB.setStyleSheet('color: white')
         tempLB.setFont(QFont("", 60, QFont.Bold))
         tempLB.setFixedSize(self.width()/100*10, img.height())
-        tempLB.move(self.width()/100*5+img.width(), self.height()/100*5)
+        tempLB.move(self.width()/100*3+img.width(), self.height()/100*1)
         tempLB.setAutoFillBackground(True)
         p = tempLB.palette()
         p.setColor(tempLB.backgroundRole(), Qt.black)
@@ -147,18 +149,18 @@ class SmartMirrorGUI(QWidget):
         locLB.setStyleSheet('color: white')
         locLB.setFont(QFont("", 40, QFont.Bold))
         locLB.setFixedSize(self.width()/100*30, self.height()/100*6)
-        locLB.move(self.width()/100*5, self.height()/100*5+img.height())
+        locLB.move(self.width()/100*3, self.height()/100*1+img.height())
         locLB.setAutoFillBackground(True)
         p = locLB.palette()
         p.setColor(locLB.backgroundRole(), Qt.black)
         locLB.setPalette(p)
         locLB.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
 
-        mmLB = QLabel("▲"+weather_info["tmx"][:-2]+"˚C ▼"+weather_info["tmn"][:-2]+"˚C")
+        mmLB = QLabel("▲"+str(weather_info["max_tem"])[:-2]+"˚C ▼"+str(weather_info["min_tem"])[:-2]+"˚C")
         mmLB.setStyleSheet('color: white')
         mmLB.setFont(QFont("", 40, QFont.Bold))
         mmLB.setFixedSize(self.width()/100*30, self.height()/100*6)
-        mmLB.move(self.width()/100*5, self.height()/100*11 + img.height())
+        mmLB.move(self.width()/100*3, self.height()/100*7 + img.height())
         mmLB.setAutoFillBackground(True)
         p = mmLB.palette()
         p.setColor(mmLB.backgroundRole(), Qt.black)
@@ -184,7 +186,7 @@ class SmartMirrorGUI(QWidget):
         titleLB.setStyleSheet('color: white')
         titleLB.setFont(QFont("", 40, QFont.Bold))
         titleLB.setFixedSize(self.width()/100*30, self.height()/100*6)
-        titleLB.move(self.width()/100*35, self.height()/100*7)
+        titleLB.move(self.width()/100*35, self.height()/100*3)
         titleLB.setAutoFillBackground(True)
         p = titleLB.palette()
         p.setColor(titleLB.backgroundRole(), Qt.black)
@@ -196,7 +198,7 @@ class SmartMirrorGUI(QWidget):
         artistLB.setStyleSheet('color: white')
         artistLB.setFont(QFont("", 30, QFont.Bold))
         artistLB.setFixedSize(self.width()/100*30, self.height()/100*6)
-        artistLB.move(self.width()/100*35, self.height()/100*13)
+        artistLB.move(self.width()/100*35, self.height()/100*9)
         artistLB.setAutoFillBackground(True)
         p = artistLB.palette()
         p.setColor(artistLB.backgroundRole(), Qt.black)
@@ -219,8 +221,8 @@ class SmartMirrorGUI(QWidget):
         dateLB = QLabel(d)
         dateLB.setStyleSheet('color: white')
         dateLB.setFont(QFont("", 37, QFont.Bold))
-        dateLB.setFixedSize(self.width()/100*30, self.height()/100*6)
-        dateLB.move(self.width()/100*67, self.height()/100*7)
+        dateLB.setFixedSize(self.width()/100*33, self.height()/100*6)
+        dateLB.move(self.width()/100*65, self.height()/100*3)
         dateLB.setAutoFillBackground(True)
         p = dateLB.palette()
         p.setColor(dateLB.backgroundRole(), Qt.black)
@@ -235,8 +237,8 @@ class SmartMirrorGUI(QWidget):
         timeLB = QLabel(t)
         timeLB.setStyleSheet('color: white')
         timeLB.setFont(QFont("", 65, QFont.Bold))
-        timeLB.setFixedSize(self.width()/100*30, self.height()/100*8)
-        timeLB.move(self.width()/100*67, self.height()/100*13)
+        timeLB.setFixedSize(self.width()/100*33, self.height()/100*8)
+        timeLB.move(self.width()/100*65, self.height()/100*9)
         timeLB.setAutoFillBackground(True)
         p = timeLB.palette()
         p.setColor(timeLB.backgroundRole(), Qt.black)
@@ -272,7 +274,7 @@ class SmartMirrorGUI(QWidget):
         while(True):
             try:
                 time.sleep(300)
-                weather_info = wc.get_weather()
+                weather_info = self.fm.get_weather()
 
                 if weather_info is None:
                     return None
@@ -280,34 +282,34 @@ class SmartMirrorGUI(QWidget):
                 dt = datetime.datetime.now()
 
                 img = QPixmap("weather_img/sunny-day.png")
-                if weather_info['pty'] == "0":
-                    if weather_info['sky'] == "1":
-                        if dt.hour >= 6 and dt.hour <= 20:
-                            img = QPixmap("weather_img/sunny-day.png")
-                        else:
-                            img = QPixmap("weather_img/sunny-night.png")
-                    elif weather_info['sky'] == "2":
-                        if dt.hour >= 6 and dt.hour <= 20:
-                            img = QPixmap("weather_img/cloudy-day.png")
-                        else:
-                            img = QPixmap("weather_img/cloudy-night.png")
-                    elif weather_info['sky'] == "3":
-                        img = QPixmap("weather_img/cloudy-many.png")
-                    elif weather_info['sky'] == "4":
-                        img = QPixmap("weather_img/cloudy-so-much.png")
-                elif weather_info['pty'] == "1":
+
+                if weather_info['cur_sky'] == "Sunny":
+                    if dt.hour >= 6 and dt.hour <= 20:
+                        img = QPixmap("weather_img/sunny-day.png")
+                    else:
+                        img = QPixmap("weather_img/sunny-night.png")
+                elif weather_info['cur_sky'] == "Cloudy":
+                    if dt.hour >= 6 and dt.hour <= 20:
+                        img = QPixmap("weather_img/cloudy-day.png")
+                    else:
+                        img = QPixmap("weather_img/cloudy-night.png")
+                elif weather_info['cur_sky'] == "Very Cloudy":
+                    img = QPixmap("weather_img/cloudy-many.png")
+                elif weather_info['cur_sky'] == "Foggy":
+                    img = QPixmap("weather_img/cloudy-so-much.png")
+                elif weather_info['cur_sky'] == "Rainy":
                     img = QPixmap("weather_img/rainy.png")
-                elif weather_info['pty'] == "2":
+                elif weather_info['cur_sky'] == "rain with snow":
                     img = QPixmap("weather_img/rainy-snow.png")
-                elif weather_info['pty'] == "3":
+                elif weather_info['cur_sky'] == "Snowy":
                     img = QPixmap("weather_img/snow.png")
 
                 img.scaledToWidth(10, Qt.FastTransformation)
                 img = img.scaledToWidth(self.width() / 100 * 10)
                 self.imgLB.setPixmap(img)
 
-                self.tempLB = QLabel(weather_info['t3h']+"˚C")
-                self.mmLB = QLabel("▲"+weather_info["tmx"][:-2]+"˚C ▼"+weather_info["tmn"][:-2]+"˚C")
+                self.tempLB = QLabel(str(weather_info['cur_tem'])+"˚C")
+                self.mmLB = QLabel("▲"+weather_info["max_tem"][:-2]+"˚C ▼"+weather_info["min_tem"][:-2]+"˚C")
             except:
                 break
 
