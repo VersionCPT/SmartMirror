@@ -5,16 +5,16 @@ from PyQt5.QtCore import *
 import datetime
 import time
 import threading
-from app import web_connector as wc
+from app import web_connector
 import ctypes
-from app import firebase_manager
 
 class SmartMirrorGUI(QWidget):
     def __init__(self):
         super().__init__()
         self.showFullScreen()
         self.setWindowTitle('鏡:Rorrim')
-        self.fm = firebase_manager.FirebaseManager()
+        self.wc = web_connector.WebConnector()
+        self.playlist = []
         self.initUI()
 
     def closeEvent(self, event):
@@ -44,7 +44,7 @@ class SmartMirrorGUI(QWidget):
 
     def initSchedule(self):
         # get schedules from server or google calendar
-        schedules = wc.get_schedule()
+        schedules = self.wc.get_schedule()
 
         num_schedules = len(schedules)
 
@@ -68,7 +68,7 @@ class SmartMirrorGUI(QWidget):
 
     def initNews(self):
         # get news from server
-        self.news = wc.get_news("world")
+        self.news = self.wc.get_news("world")
         self.index = 1
 
         LB = QLabel(self.news[0][0])
@@ -88,7 +88,7 @@ class SmartMirrorGUI(QWidget):
     def initWeather(self):
         # get weather information from server or by using api
 
-        weather_info = self.fm.get_weather()
+        weather_info = self.wc.get_weather()
 
         if weather_info is None:
             return None
@@ -140,7 +140,7 @@ class SmartMirrorGUI(QWidget):
         tempLB.setPalette(p)
         tempLB.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
 
-        loc = wc.get_location()
+        loc = self.wc.get_location()
         locLB = QLabel(loc)
         locLB.setStyleSheet('color: white')
         locLB.setFont(QFont("", 40, QFont.Bold))
@@ -270,7 +270,7 @@ class SmartMirrorGUI(QWidget):
         while(True):
             try:
                 time.sleep(300)
-                weather_info = self.fm.get_weather()
+                weather_info = self.wc.get_weather()
 
                 if weather_info is None:
                     return None
