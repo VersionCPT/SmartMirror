@@ -77,7 +77,6 @@ class WebConnector():
         files = {'file':open(file, 'rb')}
         r = requests.post(url, files=files)
 
-
     def get_mp3_file(self):
         url = self.domain + "/download_mp3_file/"
         fileName = 'a.mp3'
@@ -92,4 +91,8 @@ class WebConnector():
         url_connect.close()
 
     def get_playlist(self):
-        pass
+        playlist = []
+
+        playlist.append(["What is Love?", "TWICE(트와이스)"])
+
+        return self.fm.get_playlist()

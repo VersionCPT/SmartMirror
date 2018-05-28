@@ -15,3 +15,8 @@ class FirebaseManager():
     def get_weather(self):
         weather_data = db.reference('weather'.format(self.weather.key)).get()
         return weather_data
+
+    def get_playlist(self):
+        playlist = []
+        playlist.append(["What is Love?", "TWICE(트와이스)"])
+        return playlist

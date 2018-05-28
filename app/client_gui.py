@@ -174,11 +174,13 @@ class SmartMirrorGUI(QWidget):
 
     def initMusic(self):
         # get music file or information
-        musics = []
-        musics.append(["♬ What is Love?", "TWICE(트와이스)"])
+
+        self.playlist = self.wc.get_playlist()
 
         musicLB = []
-        titleLB = QLabel(musics[0][0])
+        titleLB = QLabel("")
+        if self.playlist is not None and len(self.playlist) > 0:
+            titleLB.setText("♬ " + self.playlist[0][0])
         titleLB.setStyleSheet('color: white')
         titleLB.setFont(QFont("", 40, QFont.Bold))
         titleLB.setFixedSize(self.width()/100*30, self.height()/100*6)
@@ -190,7 +192,9 @@ class SmartMirrorGUI(QWidget):
         titleLB.setAlignment(Qt.AlignHCenter)
         musicLB.append(titleLB)
 
-        artistLB = QLabel(musics[0][1])
+        artistLB = QLabel("")
+        if self.playlist is not None and len(self.playlist) > 0:
+            artistLB.setText(self.playlist[0][1])
         artistLB.setStyleSheet('color: white')
         artistLB.setFont(QFont("", 30, QFont.Bold))
         artistLB.setFixedSize(self.width()/100*30, self.height()/100*6)
