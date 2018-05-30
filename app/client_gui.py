@@ -9,12 +9,12 @@ import web_connector
 import ctypes
 
 class SmartMirrorGUI(QWidget):
-    def __init__(self):
+    def __init__(self, width, height):
         super().__init__()
-        #self.showFullScreen()
-        self.setFixedSize(1200,800)
-        print(self.width())
-        print(self.height())
+        self.showFullScreen()
+        self.setFixedSize(width, height)
+        print(width)
+        print(height)
         self.setWindowTitle('鏡:Rorrim')
         self.wc = web_connector.WebConnector()
         self.playlist = []
@@ -55,7 +55,7 @@ class SmartMirrorGUI(QWidget):
         for i in range(num_schedules):
             LB = QLabel(schedules[i][0]+" "+schedules[i][1])
             LB.setStyleSheet('color: white')
-            LB.setFont(QFont("", 40, QFont.Bold))
+            LB.setFont(QFont("", 25, QFont.Bold))
             LB.setFixedSize(self.width()/100*40, self.height()/100*6)
             LB.move(self.width()/100, self.height()/100*(94-(num_schedules-i)*6))
             LB.setAutoFillBackground(True)
@@ -76,7 +76,7 @@ class SmartMirrorGUI(QWidget):
 
         LB = QLabel(self.news[0][0])
         LB.setStyleSheet('color: white')
-        LB.setFont(QFont("", 30, QFont.Bold))
+        LB.setFont(QFont("", 20, QFont.Bold))
         LB.setFixedSize(self.width(), self.height()/100*5)
         LB.move(self.width()/100, self.height()/100*94)
         LB.setAutoFillBackground(True)
@@ -185,7 +185,7 @@ class SmartMirrorGUI(QWidget):
         if self.playlist is not None and len(self.playlist) > 0:
             titleLB.setText("♬ " + self.playlist[0][0])
         titleLB.setStyleSheet('color: white')
-        titleLB.setFont(QFont("", 40, QFont.Bold))
+        titleLB.setFont(QFont("", 25, QFont.Bold))
         titleLB.setFixedSize(self.width()/100*30, self.height()/100*6)
         titleLB.move(self.width()/100*35, self.height()/100*3)
         titleLB.setAutoFillBackground(True)
@@ -199,7 +199,7 @@ class SmartMirrorGUI(QWidget):
         if self.playlist is not None and len(self.playlist) > 0:
             artistLB.setText(self.playlist[0][1])
         artistLB.setStyleSheet('color: white')
-        artistLB.setFont(QFont("", 30, QFont.Bold))
+        artistLB.setFont(QFont("", 22, QFont.Bold))
         artistLB.setFixedSize(self.width()/100*30, self.height()/100*6)
         artistLB.move(self.width()/100*35, self.height()/100*9)
         artistLB.setAutoFillBackground(True)
@@ -223,7 +223,7 @@ class SmartMirrorGUI(QWidget):
 
         dateLB = QLabel(d)
         dateLB.setStyleSheet('color: white')
-        dateLB.setFont(QFont("", 37, QFont.Bold))
+        dateLB.setFont(QFont("", 21, QFont.Bold))
         dateLB.setFixedSize(self.width()/100*33, self.height()/100*6)
         dateLB.move(self.width()/100*65, self.height()/100*3)
         dateLB.setAutoFillBackground(True)
@@ -239,7 +239,7 @@ class SmartMirrorGUI(QWidget):
             t = t + " AM"
         timeLB = QLabel(t)
         timeLB.setStyleSheet('color: white')
-        timeLB.setFont(QFont("", 65, QFont.Bold))
+        timeLB.setFont(QFont("", 30, QFont.Bold))
         timeLB.setFixedSize(self.width()/100*33, self.height()/100*8)
         timeLB.move(self.width()/100*65, self.height()/100*9)
         timeLB.setAutoFillBackground(True)
